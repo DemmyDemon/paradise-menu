@@ -143,7 +143,6 @@ end
 local muhMenu = pMenu({header = 'muh Menu!'})
 
 Citizen.CreateThread(function()
-    local muhMenu
     while true do
         if muhMenu.visible() then
             muhMenu.draw({
