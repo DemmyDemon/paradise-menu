@@ -189,7 +189,7 @@ Right?
 
 ## What functions can I call, and what do they do? ##
 
-|Functon     | Thing what it does                                                       |
+| Function   | Thing what it does                                                       |
 |------------|--------------------------------------------------------------------------|
 | .show()    | Shows the menu                                                           |
 | .hide()    | Hides the menu                                                           |
