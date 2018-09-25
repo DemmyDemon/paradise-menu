@@ -28,24 +28,28 @@ Working through exports is really slow, so I do not recommend it.
 If someone could point out what I did wrong to make it this slow, that'd be great.
 
 First, you must obtain a `pMenu` object, and after that the `@lua` method and the exported function method are exactly the same, aside from the horrible slow-downs from the export.  
-
-    -- The @lua way:
-    local muhMenu = pMenu({
-        header = 'I has a menu'
-    })
+```lua
+-- The @lua way:
+local muhMenu = pMenu({
+    header = 'I has a menu'
+})
+```
 or
-
-    -- The exports way:
-    local muhMenu = exports['paradise-menu]:create({
-        header = 'I has a slow'
-    })
+```lua
+-- The exports way:
+local muhMenu = exports['paradise-menu]:create({
+    header = 'I has a slow'
+})
+```
 
 More on the creation options are [in the example](example.lua).
 
 Before you can draw your menu, you must make it visible.
 
-    -- As promised, exact same for both ways.
-    muhMenu.show()
+```lua
+-- As promised, exact same for both ways.
+muhMenu.show()
+```
 
 Now you're ready to draw your menu, but .. what's in it? What menu items do you want?  
 First we'll need some menu callbacks, though. Go get some coffee, because this is where it gets convoluted and user-hostile.
@@ -54,103 +58,108 @@ First we'll need some menu callbacks, though. Go get some coffee, because this i
 
 An integral part of `paradise-menu` is the concept of a menu callback. This is a function that the menu will call when it thinks it's relevant, even if you disagree. Try not to cry, you'll figure out what I mean eventually.
 
-    function buttonCallback(selected,value,menu)
-        if selected then
-            Citizen.Trace('You selected a button! It has the value '..value)
+```lua
+function buttonCallback(selected,value,menu)
+    if selected then
+        Citizen.Trace('You selected a button! It has the value '..value)
 
-            -- Because a value is passed, a single callback function can do more than one thing!
-            if value == 'close' then
-                menu.hide()
-            end
+        -- Because a value is passed, a single callback function can do more than one thing!
+        if value == 'close' then
+            menu.hide()
         end
     end
+end
+```
 
 So far, so good. It's just a function.  
 This one is suitable to be called by a button, as it takes just three arguments.  
 What if there is a list in the menu, though?
 
 Yes, I'm aware that pineapples are not animals, but that is hardly relevant to the task at hand. Pay attention!
+```lua
+local selectedAnimal = 1
+local animals = {"Cow","Horse","Dog","Pineapple"}
 
-    local selectedAnimal = 1
-    local animals = {"Cow","Horse","Dog","Pineapple"}
-
-    function animalCallback(selected,newIndex,data,menu)
-        if selected then
-            -- Whatever cod you put here will run when the item is *selected*
-        else
-            -- This will run when the item is *changed*, for example, if the value was increased...
-            selectedAnimal = newIndex
-            -- ...will now indicate that we care more about the horse than the cow.
-        end
+function animalCallback(selected,newIndex,data,menu)
+    if selected then
+        -- Whatever cod you put here will run when the item is *selected*
+    else
+        -- This will run when the item is *changed*, for example, if the value was increased...
+        selectedAnimal = newIndex
+        -- ...will now indicate that we care more about the horse than the cow.
     end
+end
+```
 
 Excellent, now we have the ground work laid down, and can begin drawing our menu!
 
 ## How do I draw the menu? ##
 
 Since the menu is entirely dynamic, we can build the menu when we draw it. For very heavy menus, however, it's recommended that you build it ahead of time, and then rebuild it when appropriate. For example, we could rebuild the menu from the callback functions.
+```lua
+muhMenu.draw({
+    'Finally!',{ -- This is our "root level"
+        -- This is where our root level menu items go!
 
-    muhMenu.draw({
-        'Finally!',{ -- This is our "root level"
-            -- This is where our root level menu items go!
+        {'Button!','description','some value',buttonCallback},
+        -- Note that we are not calling the callback function, only referring to it!
 
-            {'Button!','description','some value',buttonCallback},
-            -- Note that we are not calling the callback function, only referring to it!
+        {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
+        -- See how this ties in with the stuff we set up before? No?
+        -- TODO:  Improve documentation.
 
-            {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
-            -- See how this ties in with the stuff we set up before? No?
-            -- TODO:  Improve documentation.
-
-            {'Close menu','','close',buttonCallback}
-            -- The description bit on the right side of the button can be blank. No worries.
-        }
-    })
+        {'Close menu','','close',buttonCallback}
+        -- The description bit on the right side of the button can be blank. No worries.
+    }
+})
+```
 
 ## It doesn't draw! ##
 
 Maybe it blinks once on screen, and then it's gone?  
 You have to draw it *every frame*, or it won't be even remotely useful.
 Let's do a complete example:
+```lua
+local selectedAnimal = 1
+local animals = {"Cow","Horse","Dog","Pineapple"}
 
-    local selectedAnimal = 1
-    local animals = {"Cow","Horse","Dog","Pineapple"}
+function animalCallback(selected,newIndex,data,menu)
+    if selected then
+        Citizen.Trace('Selected animal: '..animals[newIndex])
+    else
+        selectedAnimal = newIndex
+    end
+end
 
-    function animalCallback(selected,newIndex,data,menu)
-        if selected then
-            Citizen.Trace('Selected animal: '..animals[newIndex])
-        else
-            selectedAnimal = newIndex
+function buttonCallback(selected,value,menu)
+    if selected then
+        Citizen.Trace('You selected a button! It has the value '..value)
+        if value == 'close' then
+            menu.hide()
         end
     end
+end
 
-    function buttonCallback(selected,value,menu)
-        if selected then
-            Citizen.Trace('You selected a button! It has the value '..value)
-            if value == 'close' then
-                menu.hide()
-            end
+local muhMenu = pMenu({header = 'muh Menu!'})
+
+Citizen.CreateThread(function()
+    local muhMenu
+    while true do
+        if muhMenu.visible() then
+            muhMenu.draw({
+                'Finally!',{
+                    {'Button!','description','some value',buttonCallback},
+                    {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
+                    {'Close menu','','close',buttonCallback}
+                }
+            })
+        elseif IsControlJustPressed(0,244) then -- INPUT_INTERACTION_MENU, usually bound to M
+            muhMenu.show()
         end
+        Citizen.Wait(0)
     end
-
-    local muhMenu = pMenu({header = 'muh Menu!'})
-
-    Citizen.CreateThread(function()
-        local muhMenu
-        while true do
-            if muhMenu.visible() then
-                muhMenu.draw({
-                    'Finally!',{
-                        {'Button!','description','some value',buttonCallback},
-                        {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
-                        {'Close menu','','close',buttonCallback}
-                    }
-                })
-            elseif IsControlJustPressed(0,244) then -- INPUT_INTERACTION_MENU, usually bound to M
-                muhMenu.show()
-            end
-            Citizen.Wait(0)
-        end
-    end)
+end)
+```
 
 ## Neat! How do I use the menu? ##
 
@@ -162,16 +171,17 @@ If the menu is configured to be abortable, backspace also closes the menu when y
 
 Yes, I was getting to that. A sub-menu is like a menu *inside* a menu.  
 Let's work off what we already have, and see where it gets us.
-
-    muhMenu.draw({
-        'Finally!',{
-            {'Button!','description','some value',buttonCallback},
-            {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
-            {'Abort mission!'{
-                {'For real!','','close',buttonCallback}
-            }}
-        }
-    })
+```lua
+muhMenu.draw({
+    'Finally!',{
+        {'Button!','description','some value',buttonCallback},
+        {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
+        {'Abort mission!'{
+            {'For real!','','close',buttonCallback}
+        }}
+    }
+})
+```
 
 See what we did there? Now "Abort mission!" is a sub menu, and it has the button "For real!" in it.  
 Yes, I know it's the same button as before, but with a new name, but that's the whole idea. You could change this table on the fly as much as you like, and you can go as deep in sub menus as your RAM will hold in one gulp.
