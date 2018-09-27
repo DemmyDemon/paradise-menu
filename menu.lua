@@ -1,14 +1,14 @@
 local _defaultColors = {
-    header_text = {r=253,g=180,b=51,a=255},         -- Color of the header text,"Menu" in this example
-    header_background = {r=0,g=0,b=255,a=128},      -- The background behind that text.
-    title_text = {r=255,g=200,b=71,a=255},          -- Color of "Example menu" in this example, but also "Sub-menu" and "Even deeper!" further down.
-    title_background = {r=46,g=160,b=210,a=128},    -- The color behind the title text.
-    background = {r=0,g=0,b=0,a=128},               -- Background of the actual menu items, when *not* active.
-    background_active = {r=0,g=0,b=0,a=200},        -- Active items get this behind them.
-    item = {r=255,g=255,b=255,a=255},               -- Menu item text.
-    item_value = {r=255,g=255,b=255,a=200},         -- The value shown on the right, for example the "8" of the first button.
-    item_active = {r=255,g=255,b=200,a=255},        -- Text of the item when it is active.
-    item_value_active = {r=255,g=255,b=200,a=255},  -- Value again, but this time for the active item.
+    header_text = {r=253,g=180,b=51,a=255},
+    header_background = {r=0,g=0,b=255,a=128},
+    title_text = {r=255,g=200,b=71,a=255},
+    title_background = {r=46,g=160,b=210,a=128},
+    background = {r=0,g=0,b=0,a=128},
+    background_active = {r=0,g=0,b=0,a=200},
+    item = {r=255,g=255,b=255,a=255},
+    item_value = {r=255,g=255,b=255,a=200},
+    item_active = {r=255,g=255,b=200,a=255},
+    item_value_active = {r=255,g=255,b=200,a=255},
 }
 local _sizes = {
     header_height = 0.1,
@@ -567,6 +567,10 @@ function pMenu(spec)
             menu.firstDraw = true
         end
         menu.shown = true;
+    end
+
+    function menu.pulse()
+        menu.firstDraw  = true
     end
 
     function menu.hide()

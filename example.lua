@@ -44,7 +44,7 @@ RegisterCommand("paradise-menu-example",function()
             -- All of the above can be omitted, and will default to the values shown here.
             -- These values are inherited by sub-menus, and *can not* be changed later unless you dig into the returned menu object manually. Please don't.
 
-            -- TODO:  Document hovertrigger, backfunction and forwardfunction (They're all off by default!)
+            -- For a more complete list of options, see the README.md file
         })
         ParadiseMenu.show()
     end

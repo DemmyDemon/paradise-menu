@@ -15,7 +15,7 @@ They do illustrate quite well that the menu is semi-transparent, don't you think
 Don't worry. With just a tiny bit of experience with [OpenIV](http://openiv.com/), you can make a different skin for it and put your own logo there. It's fine. I won't even cry.  
 That island is the logo of the server I wrote this for, [Swedish Paradise](http://gta.z0rz.net/).  
 Just bust open the included YTD to see what parts you'll need.  
-This whole thing is MIT licensed, so you can even derive your own graphics for mine. Stick to the license and I swear I won't hunt you down with an angry ferret.
+This whole thing is MIT licensed, so you can even derive your own graphics from mine. Stick to the license and I swear I won't hunt you down with an angry ferret.
 
 ## Where do I begin? ##
 
@@ -37,12 +37,12 @@ local muhMenu = pMenu({
 or
 ```lua
 -- The exports way:
-local muhMenu = exports['paradise-menu]:create({
+local muhMenu = exports['paradise-menu']:create({
     header = 'I has a slow'
 })
 ```
 
-More on the creation options are [in the example](example.lua).
+More on the creation options are [in the example](example.lua), and there is a table near the end.
 
 Before you can draw your menu, you must make it visible.
 
@@ -175,9 +175,11 @@ muhMenu.draw({
     'Finally!',{
         {'Button!','description','some value',buttonCallback},
         {'Select animal', animals,selectedAnimal,animalCallback,'animal selection'},
-        {'Abort mission!'{
-            {'For real!','','close',buttonCallback}
-        }}
+        {
+            'Abort mission!',{
+                {'For real!','','close',buttonCallback}
+            }
+        }
     }
 })
 ```
@@ -206,7 +208,47 @@ Right?
 | .disable() | Makes the menu non-interactive and slightly more transparent             |
 | .enable()  | Makes it interactive again, regular transparency                         |
 | .root()    | Sends the menu back to the root level and makes the first item selected  |
+| .pulse()   | If hovertrigger is enabled, this triggers it on the current item         |
 | .draw()    | Makes you dinner an.. Oh, wait, it draws the menu                        |
+
+## What can I do to customize? ##
+
+When you `pMenu()`, you can pass it a bunch of options. These are...
+
+| Option            | Type      | Function                                                                                      | Default value     |
+|-------------------|-----------|-----------------------------------------------------------------------------------------------|-------------------|
+| x                 | Float     | Set the menu distance from the left of the screen                                             | 0.158             |
+| y                 | Float     | Set the menu distance from the top of the screen                                              | 0.336             |
+| w                 | Float     | Set the width of the menu                                                                     | 0.25              |
+| wrap              | Boolean   | When arriving at the last value in a list or range, go back to the beginning?                 | true              |
+| repeatInterval    | Integer   | When a navigation key is held down, the delay in milliseconds before repeating the action.    | 200               |
+| header            | String    | The script-fonted text at the top of the menu.                                                | "Menu"            |
+| abortable         | Boolean   | Does pressing backspace at root level close the menu?                                         | false             |
+| color             | Table     | Color definitions.                                                                            | See below         |
+| maxitems          | Integer   | The number of items shown before you have to scroll down to see more. Effectively the height. | 10                |
+| ytd               | String    | Name of the texture library to use.                                                           | "paradise-menu"   |
+| hovertrigger      | Boolean   | When a menu item is navigated to, should it trigger a callback with selected = false ?        | false             |
+| backfunction      | Function  | The function to run when backing out of a sub menu                                            | nil               |
+| forwardfunction   | Function  | The function to run when entering a sub menu                                                  | nil               |
+
+Default color definitions:
+
+```lua
+{
+    header_text = {r=253,g=180,b=51,a=255},         -- Color of the header text,"Menu" in the example
+    header_background = {r=0,g=0,b=255,a=128},      -- The background behind that text, if no texture is used.
+    title_text = {r=255,g=200,b=71,a=255},          -- Color of "Example menu" in the example.
+    title_background = {r=46,g=160,b=210,a=128},    -- The color behind the title text if no texture is used.
+    background = {r=0,g=0,b=0,a=128},               -- Background of the actual menu items, when *not* active.
+    background_active = {r=0,g=0,b=0,a=200},        -- Active items get this behind them.
+    item = {r=255,g=255,b=255,a=255},               -- Menu item text.
+    item_value = {r=255,g=255,b=255,a=200},         -- The value shown on the right. "8" of the first button in the example.
+    item_active = {r=255,g=255,b=200,a=255},        -- Text of the item when it is active.
+    item_value_active = {r=255,g=255,b=200,a=255},  -- Value on the right, but for an active item.
+}
+```
+
+You can provide only a few of the colors, and the rest will be the default values.
 
 ## What now? ##
 
