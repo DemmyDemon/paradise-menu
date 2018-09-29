@@ -226,6 +226,7 @@ When you `pMenu()`, you can pass it a bunch of options. These are...
 | abortable         | Boolean   | Does pressing backspace at root level close the menu?                                         | false             |
 | color             | Table     | Color definitions.                                                                            | See below         |
 | maxitems          | Integer   | The number of items shown before you have to scroll down to see more. Effectively the height. | 10                |
+| layer             | Integer   | Sets the UI layer to draw the menu on.                                                        | 10                |
 | ytd               | String    | Name of the texture library to use.                                                           | "paradise-menu"   |
 | hovertrigger      | Boolean   | When a menu item is navigated to, should it trigger a callback with selected = false ?        | false             |
 | backfunction      | Function  | The function to run when backing out of a sub menu                                            | nil               |

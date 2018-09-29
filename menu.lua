@@ -491,6 +491,8 @@ function pMenu(spec)
     menu.maxitems = spec.maxitems or 10
     menu.offset = 1 -- This is how far down the menu is "scrolled"
 
+    menu.layer = spec.layer or 10
+
     menu.disabled = false
     if spec.disabled ~= nil then
         menu.disabled = spec.disabled
@@ -621,7 +623,9 @@ function pMenu(spec)
         end
 
         local now = GetGameTimer()
-    
+
+        SetUiLayer(menu.layer)
+
         local path = menu.path
         local title,data = _seek(menuData,path)
         local x,y = _drawHeader(menu)
