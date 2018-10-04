@@ -152,7 +152,8 @@ local function _itemText(menu,x,y,active,hint,label,text)
         end
     end
     SetTextOutline()
-    SetTextDropshadow(2,0,0,0,128)
+    --SetTextDropshadow(2,0,0,0,128)
+    SetTextDropShadow()
 
     if label then
         SetTextJustification(0)
