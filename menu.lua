@@ -536,8 +536,12 @@ function pMenu(spec)
         menu.hovertrigger = spec.hovertrigger
     end
     menu.backfunction = nil
-    if spec.backfunction ~= nil and type(spec.backfunction) == 'function' then
-        menu.backfunction = spec.backfunction
+    if spec.backfunction ~= nil then
+        if type(spec.backfunction) == 'function' then
+            menu.backfunction = spec.backfunction
+        else
+            log('Menu has a back function, but it is not a real function')
+        end
     end
     menu.forwardfunction = nil
     if spec.forwardfunction ~= nil and type(spec.forwardfunction) == 'function' then
