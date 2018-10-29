@@ -535,6 +535,7 @@ function pMenu(spec)
     if spec.hovertrigger ~= nil then
         menu.hovertrigger = spec.hovertrigger
     end
+
     menu.backfunction = nil
     if spec.backfunction ~= nil then
         if type(spec.backfunction) == 'function' then
@@ -543,9 +544,19 @@ function pMenu(spec)
             log('Menu has a back function, but it is not a real function')
         end
     end
+
     menu.forwardfunction = nil
     if spec.forwardfunction ~= nil and type(spec.forwardfunction) == 'function' then
         menu.forwardfunction = spec.forwardfunction
+    end
+
+    menu.hidefunction = nil
+    if spec.hidefunction ~= nil then
+        if type(spec.hidefunction) == 'function' then
+            menu.hidefunction = spec.hidefunction
+        else
+            log('Menu has a hide function, but it is not a real function')
+        end
     end
 
     if menu.ytd then
@@ -590,6 +601,9 @@ function pMenu(spec)
         menu.wasOffset = {}
         menu.wasIndex = {}
         menu.disabled = menu.beginsDisabled
+        if menu.hidefunction then
+            menu.hidefunction(menu)
+        end
     end
 
     function menu.visible()

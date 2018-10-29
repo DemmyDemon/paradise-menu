@@ -231,6 +231,7 @@ When you `pMenu()`, you can pass it a bunch of options. These are...
 | hovertrigger      | Boolean   | When a menu item is navigated to, should it trigger a callback with selected = false ?        | false             |
 | backfunction      | Function  | The function to run when backing out of a sub menu                                            | nil               |
 | forwardfunction   | Function  | The function to run when entering a sub menu                                                  | nil               |
+| hidefunction      | Function  | The function to run when the menu is hidden                                                   | nil               |
 
 Default color definitions:
 
