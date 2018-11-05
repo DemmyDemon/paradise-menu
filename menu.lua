@@ -629,6 +629,10 @@ function pMenu(spec)
         menu.hide()
     end)
 
+    function menu.back()
+        _back(menu)
+    end
+
     function menu.root()
         menu.index = 1
         menu.offset = 1

@@ -207,6 +207,7 @@ Right?
 | .visible() | Returns if the menu is visible or not                                    |
 | .disable() | Makes the menu non-interactive and slightly more transparent             |
 | .enable()  | Makes it interactive again, regular transparency                         |
+| .back()    | The exact same as if backspace was pressed on an open menu               |
 | .root()    | Sends the menu back to the root level and makes the first item selected  |
 | .pulse()   | If hovertrigger is enabled, this triggers it on the current item         |
 | .draw()    | Makes you dinner an.. Oh, wait, it draws the menu                        |
