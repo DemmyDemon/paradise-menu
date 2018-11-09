@@ -39,6 +39,12 @@ local function _identify(spec)
             return 'doublelabel'
         end
 
+    elseif #spec == 3 then
+
+        if type(spec[3]) == 'table' then
+            return 'labelsubmenu'
+        end
+
     elseif #spec == 4 then -- button
 
         if type(spec[2]) == 'string' then
@@ -80,6 +86,8 @@ local function _stringpair(spec)
         return spec[1],spec[2],entryType
     elseif entryType == 'submenu' then
         return spec[1],'→',entryType
+    elseif entryType == 'labelsubmenu' then
+        return spec[1],'→',entryType
     elseif entryType == 'list' then
         return spec[1],'←'..spec[2][spec[3]]..'→',entryType
     elseif entryType == 'float' then
@@ -105,8 +113,13 @@ local function _seek(heap,seekPath)
         heap = heap[2]
 
         for k, v in ipairs(seekPath) do
-            name = heap[v][1]
-            heap = heap[v][2]
+            if #heap[v] == 3 then
+                name = heap[v][2]
+                heap = heap[v][3]
+            else
+                name = heap[v][1]
+                heap = heap[v][2]
+            end
         end
 
         return name,heap
@@ -316,6 +329,8 @@ local function _increase(menu,spec,slow)
     local type = _identify(spec)
     if type == 'submenu' then
         --NOOP, submenus don't change!
+    elseif type == 'labelsubmenu' then
+        --NOOP, submenus don't change, even when they have labels!
     elseif type == 'button' then
         --NOOP, buttons don't change!
     elseif type == 'list' then
@@ -365,6 +380,8 @@ local function _decrease(menu,spec,slow)
     local type = _identify(spec)
     if type == 'submenu' then
         --NOOP, submenus don't change!
+    elseif type == 'labelsubmenu' then
+        --NOOP, submenus don't change, even when they have labels!
     elseif type == 'button' then
         --NOOP, buttons don't change!
     elseif type == 'list' then
@@ -436,6 +453,8 @@ local function _hovered(menu,spec)
         local type = _identify(spec)
         if type == 'submenu' then
             -- NOOP, these need to be triggered
+        elseif type == 'labelsubmenu' then
+            --NOOP, you'll have to trigger this
         elseif type == 'label' then
             -- NOOP, labels can't be triggered
         elseif type == 'button' then
@@ -452,7 +471,7 @@ end
 
 local function _confirm(menu,spec)
     local type = _identify(spec)
-    if type == 'submenu' then
+    if type == 'submenu' or type == 'labelsubmenu' then
         table.insert(menu.path,menu.index)
         table.insert(menu.wasIndex,menu.index)
         table.insert(menu.wasOffset,menu.offset)
