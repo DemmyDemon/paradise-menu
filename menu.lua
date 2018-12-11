@@ -24,7 +24,7 @@ local function _identify(spec)
     if spec == nil then
         return 'unknown'
     end
-    
+
     if #spec == 1 then -- Ye olde Label
 
         if type(spec[1]) == 'string' or type(spec[1]) == 'number' then
@@ -68,7 +68,7 @@ local function _identify(spec)
         elseif spec[2] == '/' then
             return 'int'
         end
-    
+
     else
         return 'unknown'
     end
@@ -129,7 +129,7 @@ end
 local function _itemText(menu,x,y,active,hint,label,text)
     x = x - (menu.w/2)
     y = y - (_sizes.item_height/2)
-    
+
     SetTextWrap(x,x+(menu.w - 0.001))
 
     SetTextScale(_sizes.item_text,_sizes.item_text)
@@ -174,7 +174,7 @@ local function _itemText(menu,x,y,active,hint,label,text)
     else
         x = x + 0.001
     end
-    
+
     SetTextEntry('STRING')
     AddTextComponentString(text)
 
@@ -192,7 +192,7 @@ local function _titleText(menu,x,y,text)
     SetTextScale(_sizes.title_text,_sizes.title_text)
     --SetTextDropshadow(5,0,0,0,255)
     SetTextDropShadow()
-    
+
     local alpha = menu.color.title_text.a
 
     if menu.disabled then
@@ -200,7 +200,7 @@ local function _titleText(menu,x,y,text)
     end
 
     SetTextColour(menu.color.title_text.r,menu.color.title_text.g,menu.color.title_text.b,alpha)
-    
+
     AddTextComponentString(text)
     EndTextCommandDisplayText(x,y-0.005)
 end
@@ -428,7 +428,7 @@ local function _decrease(menu,spec,slow)
 end
 
 local function _back(menu)
-    
+
     if menu.backfunction then
         menu.backfunction(menu)
     end
@@ -439,7 +439,7 @@ local function _back(menu)
         end
     else
         table.remove(menu.path,#menu.path)
-        
+
         menu.index = menu.wasIndex[#menu.wasIndex]
         table.remove(menu.wasIndex,#menu.wasIndex)
 
@@ -666,6 +666,10 @@ function pMenu(spec)
             return
         end
 
+        if not menuData then
+            return
+        end
+
         local now = GetGameTimer()
 
         SetUiLayer(menu.layer)
@@ -678,77 +682,77 @@ function pMenu(spec)
             _drawLogo(menu,x,y)
         end
         local repeatInterval = menu.repeatInterval
-    
+
         if menu.index > #data then
             menu.index = #data
         end
-    
+
         if IsControlPressed(0,21) then -- Shift
             repeatInterval = repeatInterval * 0.3
         end
-    
+
         if menu.firstDraw then
             if not menu.disabled then
                 menu.firstDraw = nil
                 _hovered(menu,data[menu.index])
             end
         end
-    
+
         if IsControlJustPressed(0,177) and not menu.disabled then -- Backspace
             menu.lastInput = now
             _back(menu)
-    
+
         elseif IsControlJustPressed(0,176) and not menu.disabled then -- Enter
             menu.lastInput = now
             _confirm(menu,data[menu.index])
         elseif now > (menu.lastInput + repeatInterval) and not menu.disabled then
-    
+
             if IsControlPressed(0,172) then -- up arrow or mouse scroll up
                 menu.lastInput = now
-    
+
                 menu.index = menu.index - 1
-    
+
                 if menu.index < menu.offset and #data > menu.maxitems then
                     menu.offset = menu.offset - 1
                 end
-    
+
                 if menu.index < 1 then
                     menu.index = #data
                     if #data > menu.maxitems then
                         menu.offset = #data - (menu.maxitems - 1)
                     end
                 end
-    
+
                 _hovered(menu,data[menu.index])
-    
+
             elseif IsControlPressed(0,173) then -- down arrow or mouse scroll down
                 menu.lastInput = now
                 menu.index = menu.index  + 1
-    
+
                 if menu.index > menu.maxitems + (menu.offset - 1) and #data > menu.maxitems then
                     menu.offset = menu.offset + 1
                 end
-    
+
                 if menu.index > #data then
                     menu.index = 1
                     if #data > menu.maxitems then
                         menu.offset = 1
                     end
                 end
-    
+
                 _hovered(menu,data[menu.index])
-    
+
             elseif IsControlPressed(0,174) then -- left arrow
                 menu.lastInput = now
                 _decrease(menu,data[menu.index])
-    
+
             elseif IsControlPressed(0,175) then -- right arrow
                 menu.lastInput = now
                 _increase(menu,data[menu.index])
-    
+
             end
         end
-    
+
         if type(data) == 'table' then
             local stopItem = menu.maxitems + (menu.offset - 1)
             for i=menu.offset,#data do
@@ -758,9 +762,9 @@ function pMenu(spec)
                     x,y = _drawItem(menu,x,y,i,data[i])
                 end
             end
-            
+
             x,y = _drawFooter(menu,x,y,menu.index..'/'..#data)
-    
+
         else
             Citizen.Trace(debug.traceback('Unable to draw menu:  Passed data is not a table!'))
             menu.show = false
