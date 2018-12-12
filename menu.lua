@@ -113,12 +113,14 @@ local function _seek(heap,seekPath)
         heap = heap[2]
 
         for k, v in ipairs(seekPath) do
-            if #heap[v] == 3 then
-                name = heap[v][2]
-                heap = heap[v][3]
-            else
-                name = heap[v][1]
-                heap = heap[v][2]
+            if heap[v] then
+                if #heap[v] == 3 then
+                    name = heap[v][2]
+                    heap = heap[v][3]
+                else
+                    name = heap[v][1]
+                    heap = heap[v][2]
+                end
             end
         end
 
