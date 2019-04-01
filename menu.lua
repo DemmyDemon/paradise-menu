@@ -483,7 +483,11 @@ local function _confirm(menu,spec)
             menu.forwardfunction(menu)
         end
 
-        _hovered(menu,spec[2][1])
+        if type == 'submenu' then
+            _hovered(menu,spec[2][1])
+        else
+            _hovered(menu,spec[3][1])
+        end
 
     elseif type == 'button' then
         spec[4](true,spec[3],menu)
