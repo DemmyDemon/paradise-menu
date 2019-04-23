@@ -773,7 +773,7 @@ function pMenu(spec)
 
         else
             Citizen.Trace(debug.traceback('Unable to draw menu:  Passed data is not a table!'))
-            menu.show = false
+            menu.shown = false
         end
     end
 
